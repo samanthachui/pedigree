@@ -1,58 +1,65 @@
-<h1>{{ person.full_name }}</h1>
+{% extends 'treebuilder/base.html' %}
 
-First Name: {{ person.first_name }}<br/>
-Middle Name: {{ person.middle_name }}<br/>
-Last Name: {{ person.last_name }}<br/>
-Gender: {{ person.gender }}<br/>
-Date of Birth: {{ person.date_of_birth }}<br/>
+{% block title %}Person{% endblock %}
 
-{% if person.date_of_death %}
-	Date of Death: {{ person.date_of_death }}<br/>
-{% endif %}
+{% block content %}
+    <h1>{{ person.full_name }}</h1>
 
-Age: {{ person.age }}<br/>
-Father:
-	{% if person.father %}
-		<a href="{% url 'treebuilder:detail' person.father.id %}">{{person.father}}</a>
-	{% else %}
-		Unknown
+	First Name: {{ person.first_name }}<br/>
+	Middle Name: {{ person.middle_name }}<br/>
+	Last Name: {{ person.last_name }}<br/>
+	Gender: {{ person.gender }}<br/>
+	Date of Birth: {{ person.date_of_birth }}<br/>
+
+	{% if person.date_of_death %}
+		Date of Death: {{ person.date_of_death }}<br/>
 	{% endif %}
-	<br/>
-Mother:
-	{% if person.mother %}
-		<a href="{% url 'treebuilder:detail' person.mother.id %}">{{person.mother}}</a>
-	{% else %}
-		Unknown
+
+	Age: {{ person.age }}<br/>
+	Father:
+		{% if person.father %}
+			<a href="{% url 'treebuilder:detail' person.father.id %}">{{person.father}}</a>
+		{% else %}
+			Unknown
+		{% endif %}
+		<br/>
+	Mother:
+		{% if person.mother %}
+			<a href="{% url 'treebuilder:detail' person.mother.id %}">{{person.mother}}</a>
+		{% else %}
+			Unknown
+		{% endif %}
+		<br/>
+
+	{% if person.marriages %}
+	Marriages:<br/>
+	{% for marriage in person.marriages %}
+	    {% for spouse in marriage.spouses %}
+	    	{% if spouse == person %}
+	    	{% else %}
+	    		Spouse: <a href="{% url 'treebuilder:detail' spouse.id %}">{{ spouse.full_name }}</a><br/>
+	    	{% endif %}
+	    {% endfor %}
+	    {% if marriage.date_of_marriage %}
+	    Date of marriage: {{ marriage.date_of_marriage }}<br/>
+	    {% endif %}
+		{% if marriage.date_of_divorce %}
+	    Date of divorce: {{ marriage.date_of_divorce }}<br/>
+	    {% endif %}
+	{% endfor %}
 	{% endif %}
-	<br/>
-
-{% if person.marriages %}
-Marriages:<br/>
-{% for marriage in person.marriages %}
-    {% for spouse in marriage.spouses %}
-    	{% if spouse == person %}
-    	{% else %}
-    		Spouse: <a href="{% url 'treebuilder:detail' spouse.id %}">{{ spouse.full_name }}</a><br/>
-    	{% endif %}
-    {% endfor %}
-    {% if marriage.date_of_marriage %}
-    Date of marriage: {{ marriage.date_of_marriage }}<br/>
-    {% endif %}
-	{% if marriage.date_of_divorce %}
-    Date of divorce: {{ marriage.date_of_divorce }}<br/>
-    {% endif %}
-{% endfor %}
-{% endif %}
 
 
-{% if person.children %}
-Children: 
-<ul>
-{% for child in person.children %}
-    <li><a href="{% url 'treebuilder:detail' child.id %}">{{ child.full_name }}</a></li>
-{% endfor %}
-</ul>
-{% endif %}
+	{% if person.children %}
+	Children: 
+	<ul>
+	{% for child in person.children %}
+	    <li><a href="{% url 'treebuilder:detail' child.id %}">{{ child.full_name }}</a></li>
+	{% endfor %}
+	</ul>
+	{% endif %}
 
-<hr/>
-<a href="{% url 'treebuilder:index' %}">Return to Index</a>
+	<hr/>
+	<a href="{% url 'treebuilder:index' %}">Return to Index</a>
+
+{% endblock %}
