@@ -1,3 +1,4 @@
+
 {% extends 'treebuilder/base.html' %}
 
 {% block title %}List{% endblock %}
@@ -5,16 +6,7 @@
 {% block content %}
     {% load render_bundle from webpack_loader %}
 
-	<h1>List o' names</h1>
-	{% if latest_person_list %}
-	    <ul>
-	    {% for person in latest_person_list %}
-	        <li><a href="{% url 'treebuilder:detail' person.id %}">{{ person.full_name }}</a></li>
-	    {% endfor %}
-	    </ul>
-	{% endif %}
-
-	<div id="container" />
+	<div id="container"></div>
 	{% render_bundle 'main' %}
 
 {% endblock %}
