@@ -31,6 +31,16 @@ class Person(models.Model):
 		elapsed_years = years_difference - int(is_before_birthday)
 		return elapsed_years
 
+	def father_name(self):
+		if self.father:
+			return self.father.full_name()
+		return None
+
+	def mother_name(self):
+		if self.mother:
+			return self.mother.full_name()
+		return None
+
 	def parents(self):
 		return [self.father, self.mother]
 

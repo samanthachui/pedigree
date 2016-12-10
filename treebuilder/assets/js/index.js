@@ -77,9 +77,7 @@ var NavBar = React.createClass({
 var Home = React.createClass({
 	render: function() {
 		return (
-			<div>
-				<PersonTable />
-			</div>
+			<TreeViewer />
 		);
 	}
 });
@@ -104,6 +102,31 @@ var Help = React.createClass({
 				<div className="panel-heading">Help</div>
 				<div className="panel-body">
 					<p>Asymmetrical sustainable man bun, ramps freegan literally cred everyday carry slow-carb DIY vape knausgaard. Hella sartorial man bun pour-over, vaporware swag tumeric tattooed pitchfork etsy edison bulb. Fixie flexitarian messenger bag brooklyn, ugh readymade cliche iceland migas whatever franzen listicle. Pork belly kombucha swag, humblebrag edison bulb pug copper mug. Cardigan thundercats drinking vinegar, before they sold out sustainable hell of yuccie vice pour-over bespoke af. Sartorial cold-pressed kale chips la croix. Lyft ugh +1 polaroid, art party pok pok raw denim vegan.</p>
+				</div>
+			</div>
+		);
+	}
+});
+
+var TreeViewer = React.createClass({
+	getInitialState: function() {
+		return {
+			personId: '1'
+		};
+	},
+	updateProfile: function(id) {
+		this.setState({
+			personId: id
+		});
+	},
+	render: function() {
+		return (
+			<div>
+				<div className="left-container">
+					<PersonTable updateProfile={this.updateProfile} />
+				</div>
+				<div className="right-container">
+					<PersonProfile personId={this.state.personId} / >
 				</div>
 			</div>
 		);
@@ -138,8 +161,9 @@ var PersonTable = React.createClass({
 		});
 	},
 	render: function() {
+		var updateProfile = this.props.updateProfile;
 		var person = this.state.data.map(function(person, index) {
-			return <PersonTableItem key={index} person={person} />
+			return <PersonTableItem key={index} person={person} updateProfile={updateProfile} />
 		});
 		return (
 			<div className="panel panel-default">
@@ -170,15 +194,15 @@ var PersonTable = React.createClass({
 });
 
 var PersonTableItem = React.createClass({
-	handleClick: function(id, e) {
-		console.log('We need to get the details for ', id);
+	loadProfile: function(){
+		var id = this.props.person.id;
+		this.props.updateProfile(id);
 	},
 	render: function() {
 		var person = this.props.person;
-		var url = "/treebuilder/profile/" + person.id
 		return (
-			<tr>
-				<td><Link to={{ pathname: url }} >{person.first_name} {person.last_name}</Link></td>
+			<tr onClick={this.loadProfile}>
+				<td>{person.first_name} {person.last_name}</td>
 				<td>{person.gender}</td>
 				<td>{person.date_of_birth}</td>
 				<td>{person.date_of_death}</td>
@@ -195,8 +219,8 @@ var PersonProfile = React.createClass({
 		};
 	},
 	componentDidMount: function() {
-		var id = this.props.params.id;
-		this.getDataFromServer('api/' + id);
+		var id = this.props.personId;
+		this.getDataFromServer('profile/api/' + id);
 	},
 	showResult: function(response) {
 		this.setState({
@@ -216,12 +240,16 @@ var PersonProfile = React.createClass({
 			}.bind(this)
 		});
 	},
+	componentWillReceiveProps: function(nextProps) {
+		var id = nextProps.personId;
+		this.getDataFromServer('profile/api/' + id);
+	},
 	render: function() {
 		var person = this.state.data;
-		console.log(person);
+		
 		return (
 			<div className="panel panel-default">
-				<div className="panel-heading">{person.first_name} {person.last_name}</div>
+				<div className="panel-heading">{person.full_name}</div>
 				<div className="panel-body">
 					<p>
 					<b>First Name:</b> {person.first_name}<br />
@@ -230,8 +258,9 @@ var PersonProfile = React.createClass({
 					<b>Gender:</b> {person.gender}<br />
 					<b>Date of Birth:</b> {person.date_of_birth}<br />
 					<b>Date of Death:</b> {person.date_of_death}<br />
-					<b>Father:</b> {person.father}<br />
-					<b>Mother:</b> {person.mother}<br />
+					<b>Age:</b> {person.age}<br />
+					<b>Father:</b> {person.father_name}<br />
+					<b>Mother:</b> {person.mother_name}<br />
 					</p>
 				</div>
 			</div>
@@ -247,7 +276,6 @@ ReactDOM.render(
  		<IndexRoute component={Home} />
  		<Route path="browse" component={Browse} />
  		<Route path="help" component={Help} />
- 		<Route path="profile/:id" component={PersonProfile} />
     </Route>
   </Router>,
   document.getElementById('container')

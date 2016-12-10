@@ -5,3 +5,15 @@
 .navbar-mysite {
 	background-color: #99e6ff;
 }
+
+.left-container {
+	float: left;
+	width: 60%;
+	padding-right: 10px;
+}
+
+.right-container {
+	float: left;
+	width: 40%;
+	padding-left: 10px;
+}
