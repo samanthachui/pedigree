@@ -268,8 +268,6 @@ var PersonProfile = React.createClass({
 	}
 })
 
-//ReactDOM.render(<App />, document.getElementById('container'));
-
 ReactDOM.render(
   <Router history={browserHistory}>
     <Route path="/TreeBuilder/" component={App}>
