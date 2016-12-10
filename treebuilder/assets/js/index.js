@@ -244,6 +244,9 @@ var PersonProfile = React.createClass({
 		var id = nextProps.personId;
 		this.getDataFromServer('profile/api/' + id);
 	},
+	loadProfile: function(id){
+		this.getDataFromServer('profile/api/' + id);
+	},
 	render: function() {
 		var person = this.state.data;
 		
@@ -259,8 +262,8 @@ var PersonProfile = React.createClass({
 					<b>Date of Birth:</b> {person.date_of_birth}<br />
 					<b>Date of Death:</b> {person.date_of_death}<br />
 					<b>Age:</b> {person.age}<br />
-					<b>Father:</b> {person.father_name}<br />
-					<b>Mother:</b> {person.mother_name}<br />
+					<b>Father:</b> <a href="#" onClick={this.loadProfile.bind(this, person.father)}>{person.father_name}</a><br />
+					<b>Mother:</b> <a href="#" onClick={this.loadProfile.bind(this, person.mother)}>{person.mother_name}</a><br />
 					</p>
 				</div>
 			</div>
